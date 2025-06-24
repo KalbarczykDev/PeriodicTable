@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-
+import { ElementTable } from './components/element-table/element-table';
 @Component({
   selector: 'app-root',
-  imports: [],
+  standalone: true,
+  imports: [ElementTable],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrls: ['./app.scss'],
 })
 export class App {
   protected title = 'periodic-table-app';
