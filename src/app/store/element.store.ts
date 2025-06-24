@@ -24,7 +24,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
 ];
 
 @Injectable({ providedIn: 'root' })
-export class ElementService {
+export class ElementStore {
   private elements = signal<PeriodicElement[]>([]);
   private filter = signal<string>('');
 
@@ -36,7 +36,7 @@ export class ElementService {
   });
 
   loadData(): void {
-    setTimeout(() => this.elements.set(ELEMENT_DATA), 1000);
+    setTimeout(() => this.elements.set(ELEMENT_DATA), 1500);
   }
 
   setFilter(value: string): void {

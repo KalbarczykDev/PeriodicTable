@@ -5,7 +5,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ElementService } from '../../service/element.service';
+import { ElementStore as ElementStore } from '../../store/element.store';
 
 @Component({
   selector: 'app-element-table',
@@ -22,7 +22,8 @@ import { ElementService } from '../../service/element.service';
   styleUrls: ['./element-table.scss'],
 })
 export class ElementTable implements OnInit {
-  private store = inject(ElementService);
+  private debounceTimer: any;
+  private store = inject(ElementStore);
   filterValue = '';
   displayedColumns = ['position', 'name', 'weight', 'symbol'];
   elements = this.store.filteredElements;
@@ -32,6 +33,12 @@ export class ElementTable implements OnInit {
   }
 
   onFilterInput(value: string) {
-    this.store.setFilter(value);
+    if (this.debounceTimer) {
+      clearTimeout(this.debounceTimer);
+    }
+
+    this.debounceTimer = setTimeout(() => {
+      this.store.setFilter(value);
+    }, 2000);
   }
 }
