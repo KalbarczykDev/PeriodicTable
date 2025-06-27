@@ -1,5 +1,6 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { PeriodicElement } from '../models/periodic-element.model';
+import { signalStore, withState } from '@ngrx/signals';
 
 const ELEMENT_DATA: PeriodicElement[] = [
   { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
@@ -22,6 +23,20 @@ const ELEMENT_DATA: PeriodicElement[] = [
 
   { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne' },
 ];
+
+type PeriodicElementSearchState = {
+  elements: PeriodicElement[];
+  isLoading: boolean;
+  filter: { query: string; order: 'asc' | 'desc' };
+};
+
+const initialState: PeriodicElementSearchState = {
+  elements: ELEMENT_DATA,
+  isLoading: false,
+  filter: { query: '', order: 'asc' },
+};
+
+export const PerdiodicElementStore = signalStore(withState(initialState));
 
 @Injectable({ providedIn: 'root' })
 export class ElementStore {
