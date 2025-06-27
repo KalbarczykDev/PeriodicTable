@@ -9,6 +9,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ElementStore as ElementStore } from '../../store/element.store';
 import { MatDialog } from '@angular/material/dialog';
 import { EditElement } from '../edit-element/edit-element';
+import { PeriodicElement } from '../../models/periodic-element.model';
 
 @Component({
   selector: 'app-element-table',
@@ -48,7 +49,7 @@ export class ElementTable implements OnInit {
     }, 2000);
   }
 
-  openEditDialog(element: Element) {
+  openEditDialog(element: PeriodicElement) {
     const dialogRef = this.dialog.open(EditElement, {
       width: '400px',
       data: element,
