@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-edit-element',
+  standalone: true,
   templateUrl: './edit-element.html',
   imports: [
     FormsModule,
