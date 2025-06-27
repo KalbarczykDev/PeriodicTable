@@ -59,9 +59,7 @@ export const ElementStore = signalStore(
       }, 1500);
     },
     setFilter(query: string): void {
-      setTimeout(() => {
-        patchState(store, { filter: { query } });
-      }, 2000);
+      patchState(store, { filter: { query } });
     },
     updateElement(updated: PeriodicElement): void {
       const updatedList = store

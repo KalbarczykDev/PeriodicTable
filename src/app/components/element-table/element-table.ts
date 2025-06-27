@@ -29,6 +29,7 @@ import { PeriodicElement } from '../../models/periodic-element.model';
 })
 export class ElementTable implements OnInit {
   readonly store = inject(ElementStore);
+  private debounceTimer: any;
   filterValue = '';
   displayedColumns = ['position', 'name', 'weight', 'symbol', 'actions'];
   elements = this.store.filteredElements;
@@ -41,9 +42,11 @@ export class ElementTable implements OnInit {
   }
 
   onFilterInput(value: string) {
-    this.store.setFilter(value);
+    clearTimeout(this.debounceTimer);
+    this.debounceTimer = setTimeout(() => {
+      this.store.setFilter(value);
+    }, 2000);
   }
-
   openEditDialog(element: PeriodicElement) {
     const dialogRef = this.dialog.open(EditElement, {
       width: '400px',
