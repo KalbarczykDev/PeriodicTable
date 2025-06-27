@@ -31,7 +31,7 @@ type PeriodicElementSearchState = {
 };
 
 const initialState: PeriodicElementSearchState = {
-  elements: ELEMENT_DATA,
+  elements: [],
   isLoading: false,
   filter: { query: '' },
 };
@@ -59,7 +59,9 @@ export const ElementStore = signalStore(
       }, 1500);
     },
     setFilter(query: string): void {
-      patchState(store, { filter: { ...store.filter.query, query } });
+      setTimeout(() => {
+        patchState(store, { filter: { query } });
+      }, 2000);
     },
     updateElement(updated: PeriodicElement): void {
       const updatedList = store

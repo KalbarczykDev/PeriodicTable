@@ -28,11 +28,11 @@ import { PeriodicElement } from '../../models/periodic-element.model';
   styleUrls: ['./element-table.scss'],
 })
 export class ElementTable implements OnInit {
-  private debounceTimer: any;
   readonly store = inject(ElementStore);
   filterValue = '';
   displayedColumns = ['position', 'name', 'weight', 'symbol', 'actions'];
   elements = this.store.filteredElements;
+  isLoading = this.store.isLoading;
 
   constructor(private dialog: MatDialog) {}
 
@@ -41,13 +41,7 @@ export class ElementTable implements OnInit {
   }
 
   onFilterInput(value: string) {
-    if (this.debounceTimer) {
-      clearTimeout(this.debounceTimer);
-    }
-
-    this.debounceTimer = setTimeout(() => {
-      this.store.setFilter(value);
-    }, 2000);
+    this.store.setFilter(value);
   }
 
   openEditDialog(element: PeriodicElement) {
