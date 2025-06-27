@@ -23,12 +23,13 @@ import { PeriodicElement } from '../../models/periodic-element.model';
     MatProgressSpinnerModule,
     MatIconModule,
   ],
+  providers: [ElementStore],
   templateUrl: './element-table.html',
   styleUrls: ['./element-table.scss'],
 })
 export class ElementTable implements OnInit {
   private debounceTimer: any;
-  private store = inject(ElementStore);
+  readonly store = inject(ElementStore);
   filterValue = '';
   displayedColumns = ['position', 'name', 'weight', 'symbol', 'actions'];
   elements = this.store.filteredElements;

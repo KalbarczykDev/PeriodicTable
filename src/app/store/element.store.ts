@@ -1,6 +1,6 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { computed } from '@angular/core';
 import { PeriodicElement } from '../models/periodic-element.model';
-import { signalStore, withState } from '@ngrx/signals';
+import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 
 const ELEMENT_DATA: PeriodicElement[] = [
   { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
@@ -27,39 +27,45 @@ const ELEMENT_DATA: PeriodicElement[] = [
 type PeriodicElementSearchState = {
   elements: PeriodicElement[];
   isLoading: boolean;
-  filter: { query: string; order: 'asc' | 'desc' };
+  filter: { query: string };
 };
 
 const initialState: PeriodicElementSearchState = {
   elements: ELEMENT_DATA,
   isLoading: false,
-  filter: { query: '', order: 'asc' },
+  filter: { query: '' },
 };
 
-export const PerdiodicElementStore = signalStore(withState(initialState));
+export const ElementStore = signalStore(
+  { providedIn: 'root' },
+  withState(initialState),
+  withComputed(({ elements, filter }) => ({
+    filteredElements: computed(() => {
+      const term = filter().query.toLowerCase();
+      return elements().filter((el) =>
+        Object.values(el).some((v) => String(v).toLowerCase().includes(term)),
+      );
+    }),
+  })),
+  withMethods((store) => ({
+    loadData(): void {
+      patchState(store, { isLoading: true });
 
-@Injectable({ providedIn: 'root' })
-export class ElementStore {
-  private elements = signal<PeriodicElement[]>([]);
-  private filter = signal<string>('');
-
-  readonly filteredElements = computed(() => {
-    const term = this.filter().toLowerCase();
-    return this.elements().filter((el) =>
-      Object.values(el).some((v) => String(v).toLowerCase().includes(term)),
-    );
-  });
-
-  loadData(): void {
-    setTimeout(() => this.elements.set(ELEMENT_DATA), 1500);
-  }
-
-  setFilter(value: string): void {
-    this.filter.set(value);
-  }
-
-  updateElement(updated: PeriodicElement): void {
-    const newList = this.elements().map((el) => (el.position === updated.position ? updated : el));
-    this.elements.set(newList);
-  }
-}
+      setTimeout(() => {
+        patchState(store, {
+          elements: ELEMENT_DATA,
+          isLoading: false,
+        });
+      }, 1500);
+    },
+    setFilter(query: string): void {
+      patchState(store, { filter: { ...store.filter.query, query } });
+    },
+    updateElement(updated: PeriodicElement): void {
+      const updatedList = store
+        .elements()
+        .map((el) => (el.position === updated.position ? updated : el));
+      patchState(store, { elements: updatedList });
+    },
+  })),
+);
